@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
-const BadRequestError = require('../errors/bad-request-error');
+const { BadRequestError } = require('@sbticketsproject/shared');
 
 const saltRounds = 10;
-
 const PasswordManager = {
     toHash: async(plainPassword) => {
         try {

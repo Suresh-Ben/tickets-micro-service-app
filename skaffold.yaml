@@ -21,6 +21,15 @@ build:
       docker:
         dockerfile: Dockerfile
       sync:
+        infer:
+          - "**/*.js"
+          - "**/*.jsx"
+          - "**/*.css"
+    - image: sureshben/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
         manual:
-          - src: 'src/*'
+          - src: 'src/**/*.js'
             dest: .

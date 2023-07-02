@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { DatabaseConnectionError } = require('@sbticketsproject/shared');
 
 //my-imports
 const app = require('./app');

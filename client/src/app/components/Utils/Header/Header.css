@@ -1,0 +1,8 @@
+.nav-links {
+    display: flex;
+    flex-direction: row;
+}
+
+.nav-link {
+    margin: .5rem;
+}

@@ -1,10 +1,10 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const { RequestValidationError, BadRequestError } = require('@sbticketsproject/shared');
+const cookieParcel = require('../services/cookie-parcel');
 
 //my-imports
-const RequestValidationError = require('../errors/request-validation-error');
-const BadRequestError = require('../errors/bad-request-error');
 const PasswordManager = require('../services/password-manager');
 const User = require('../db-models/User');
 
@@ -37,13 +37,8 @@ router.post('/api/users/signup', [
         password: hashPassword
     });
 
-    //generate jwt
-    const token = jwt.sign({
-        email: email
-    }, process.env.JWT_KEY);
-
-    //send it to user browser
-    res.cookie('jwt', token);
+    //store cookie
+    cookieParcel(res, user._id, user.email);
 
     //response
     res.send({ message: 'User created succefully...!!!' });

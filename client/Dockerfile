@@ -4,7 +4,7 @@ WORKDIR /app
 
 #setup this image
 COPY ./package.json ./
-RUN npm i --omit=dev
+RUN npm i
 COPY ./ ./
 
 #startup commands

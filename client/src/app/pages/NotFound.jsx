@@ -1,10 +1,9 @@
 import React from "react";
+import NotFoundComponent from '../components/NotFound';
 
 function NotFound() {
     return (
-        <div>
-            This is not found
-        </div>
+        <NotFoundComponent/>
     );
 }
 

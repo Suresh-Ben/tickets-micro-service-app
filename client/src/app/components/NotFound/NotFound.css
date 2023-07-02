@@ -1,0 +1,9 @@
+.not-found-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.not-found-body span {
+    color: red;
+}

@@ -1,11 +1,11 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const { RequestValidationError, BadRequestError } = require('@sbticketsproject/shared');
 const jwt = require('jsonwebtoken');
+const cookieParcel = require('../services/cookie-parcel');
 
 //my imports
-const RequestValidationError = require('../errors/request-validation-error');
 const PasswordManager = require('../services/password-manager');
-const BadRequestError = require('../errors/bad-request-error');
 const User = require('../db-models/User');
 
 //inits
@@ -33,13 +33,8 @@ router.post('/api/users/signin', [
     const passwordMatch = await PasswordManager.compare(password, user.password);
     if (!passwordMatch) throw new BadRequestError('Invalid credentials');
 
-    //generate jwt
-    const token = jwt.sign({
-        email: email
-    }, process.env.JWT_KEY);
-
-    //send it to user browser
-    res.cookie('jwt', token);
+    //store cookie
+    cookieParcel(res, user._id, user.email);
 
     //response
     res.send({ message: 'signin succesfull!!!' });
