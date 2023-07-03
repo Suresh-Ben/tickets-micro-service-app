@@ -28,7 +28,7 @@ router.post('/api/tickets', [
 
         //publish ticket created event
         const stan = nats.client();
-        publishEvent(stan, TicketCreatedSchema.channel, TicketCreatedSchema.create({
+        await publishEvent(stan, TicketCreatedSchema.channel, TicketCreatedSchema.create({
             ticketId: ticket._id,
             ticketName: ticket.title,
             ticketPrice: ticket.price,

@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tickets-deployment
+  name: orders-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tickets
+      app: orders
   template:
     metadata:
       labels:
-        app: tickets
+        app: orders
     spec:
       containers:
-        - name: tickets
-          image: sureshben/tickets
+        - name: orders
+          image: sureshben/orders
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: MONGO_URI
-              value: 'mongodb://tickets-mongo-cluster-service:27017/tickets'
+              value: 'mongodb://orders-mongo-cluster-service:27017/orders'
             - name: NATS_URI
               value: 'http://nats-service:4222'
             - name: JWT_KEY
@@ -33,12 +33,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tickets-cluster-service
+  name: orders-cluster-service
 spec:
   selector:
-    app: tickets
+    app: orders
   ports:
-    - name: tickets
+    - name: orders
       protocol: TCP
       port: 3000
       targetPort: 3000

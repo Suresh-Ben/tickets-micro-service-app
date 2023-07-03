@@ -8,7 +8,7 @@ const app = require('./app');
 //app start
 const start = async() => {
     // check secret variables
-    if (!process.env.JWT_KEY) throw new Error('Error with JWT_KEy');
+    if (!process.env.JWT_KEY) throw new Error('Error with JWT_KEY');
     if (!process.env.MONGO_URI) throw new Error('Error with MONGO_URI');
     if (!process.env.NATS_URI) throw new Error('Error with NATS_URI');
     if (!process.env.NATS_CLIENT_ID) throw new Error('Error with NATS_CLIENT_ID');
@@ -33,7 +33,7 @@ const start = async() => {
 
     //app listren
     app.listen(3000, () => {
-        console.log('Tickets service is listening on port 3000!!!');
+        console.log('Orders service is listening on port 3000!!!');
     });
 }
 start();

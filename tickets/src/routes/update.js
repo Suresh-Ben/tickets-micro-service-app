@@ -1,7 +1,7 @@
 const express = require('express');
 const Ticket = require('../db-models/Ticket');
 const { body, validationResult } = require('express-validator');
-const { NotFoundError, currentUser, NotAuthorizedError } = require('@sbticketsproject/shared');
+const { NotFoundError, currentUser, NotAuthorizedError, nats, TicketUpdatedSchema, publishEvent } = require('@sbticketsproject/shared');
 
 const router = express.Router();
 
@@ -22,11 +22,21 @@ router.put('/api/tickets/:id', [
     const user = currentUser(token, process.env.JWT_KEY);
     if (user.id != ticket.userId) throw new NotAuthorizedError();
 
+    //update ticket data in database
     ticket.set({
         title: req.body.title,
         price: req.body.price,
     });
     await ticket.save();
+
+    //publish updated ticket
+    const stan = nats.client();
+    await publishEvent(stan, TicketUpdatedSchema.channel, TicketUpdatedSchema.create({
+        ticketId: ticket._id,
+        ticketName: ticket.title,
+        ticketPrice: ticket.price,
+        userId: ticket.userId
+    }));
 
     res.send(ticket);
 });

@@ -16,6 +16,22 @@ build:
         manual:
           - src: 'src/**/*.js'
             dest: .
+    - image: sureshben/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+    - image: sureshben/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
     - image: sureshben/client
       context: client
       docker:
@@ -25,11 +41,3 @@ build:
           - "**/*.js"
           - "**/*.jsx"
           - "**/*.css"
-    - image: sureshben/tickets
-      context: tickets
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/**/*.js'
-            dest: .

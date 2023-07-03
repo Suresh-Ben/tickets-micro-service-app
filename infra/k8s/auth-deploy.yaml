@@ -16,6 +16,8 @@ spec:
         - name: auth
           image: sureshben/auth
           env:
+            - name: MONGO_URI
+              value: 'mongodb://auth-mongo-cluster-service:27017/auth'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
