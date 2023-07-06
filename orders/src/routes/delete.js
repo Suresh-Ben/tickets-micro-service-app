@@ -17,16 +17,19 @@ router.delete('/api/orders/:orderId', async(req, res) => {
     if (order.userId !== user.id) throw new NotAuthorizedError();
 
     //update order status
-    order.status = OrderStatus.Cancelled;
+    order.set({
+        status: OrderStatus.Cancelled
+    });
     await order.save();
 
     // publishing an event saying this was cancelled!
     const stan = nats.client();
     await publishEvent(stan, OrderDeletedSchema.channel, OrderDeletedSchema.create({
-        orderId: order._id
+        orderId: order._id,
+        ticketId: order.ticket._id
     }));
 
-    res.status(204).send(order);
+    res.send({ message: "order deleted succefully!!" });
 });
 
 module.exports = router;

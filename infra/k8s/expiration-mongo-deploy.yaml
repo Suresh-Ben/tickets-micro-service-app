@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration-mongo
+  template:
+    metadata:
+      labels:
+        app: expiration-mongo
+    spec:
+      containers:
+        - name: expiration-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expiration-mongo-cluster-service
+spec:
+  selector:
+    app: expiration-mongo
+  ports:
+    - name: expiration-mongo
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

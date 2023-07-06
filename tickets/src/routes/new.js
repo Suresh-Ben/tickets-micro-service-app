@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Ticket = require('../db-models/Ticket');
-const { currentUser, nats, TicketCreatedSchema, publishEvent } = require('@sbticketsproject/shared');
+const { currentUser, nats, TicketCreatedSchema, publishEvent, ticketStatus } = require('@sbticketsproject/shared');
 
 const router = express.Router();
 
@@ -23,7 +23,8 @@ router.post('/api/tickets', [
         const ticket = await Ticket.create({
             title: title,
             price: price,
-            userId: user.id
+            userId: user.id,
+            status: ticketStatus.Available
         });
 
         //publish ticket created event

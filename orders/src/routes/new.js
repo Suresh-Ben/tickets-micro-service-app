@@ -1,6 +1,7 @@
 const express = require('express');
 const { currentUser, OrderStatus, nats, publishEvent, OrderCreatedSchema, RequestValidationError, BadRequestError, NotFoundError, NotAuthorizedError } = require('@sbticketsproject/shared');
 const { body, validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 const Ticket = require('../db-models/ticket');
 const Order = require('../db-models/order');
 
@@ -22,14 +23,15 @@ router.post('/api/orders', [
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) throw new NotFoundError();
 
-
     // Make sure that this ticket is not already reserved
     const existigOrder = await Order.findOne({
-        ticket: ticket,
-        status: {
-            $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Complete]
-        }
-    });
+        ticketId: ticketId,
+        $or: [
+            { status: OrderStatus.Created },
+            { status: OrderStatus.AwaitingPayment },
+            { status: OrderStatus.Complete }
+        ]
+    }).populate('ticket');
     if (existigOrder) throw new BadRequestError('This ticket is locked for payment by another user');
 
     // Calculate an expiration date for this order
@@ -44,6 +46,7 @@ router.post('/api/orders', [
         userId: user.id,
         status: OrderStatus.Created,
         expiresAt: expiration,
+        ticketId: ticketId,
         ticket: ticket
     });
 
@@ -54,7 +57,7 @@ router.post('/api/orders', [
         orderId: order._id,
         orderStatus: order.status,
         expiresAt: order.expiresAt,
-        ticketid: ticket._id,
+        ticketId: ticket._id,
         ticketPrice: ticket.price
     }));
 

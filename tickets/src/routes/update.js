@@ -15,6 +15,7 @@ router.put('/api/tickets/:id', [
     if (!errors.isEmpty()) throw new RequestValidationError(errors.array());
 
     const ticket = await Ticket.findById(req.params.id);
+    const previousTicket = await Ticket.findById(req.params.id);
     if (!ticket) throw new NotFoundError();
 
     const token = req.cookies['jwt'];
@@ -35,7 +36,9 @@ router.put('/api/tickets/:id', [
         ticketId: ticket._id,
         ticketName: ticket.title,
         ticketPrice: ticket.price,
-        userId: ticket.userId
+        userId: ticket.userId,
+        version: ticket.version,
+        previousVersion: previousTicket.version
     }));
 
     res.send(ticket);

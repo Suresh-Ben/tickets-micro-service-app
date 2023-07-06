@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
-const { DatabaseConnectionError } = require('@sbticketsproject/shared');
-const { nats } = require('@sbticketsproject/shared');
+const { DatabaseConnectionError, nats } = require('@sbticketsproject/shared');
 const listener = require('./nats/listener');
+const manageEvents = require('./manager');
 
-//my-imports
-const app = require('./app');
-
-//app start
-const start = async() => {
-    // check secret variables
-    if (!process.env.JWT_KEY) throw new Error('Error with JWT_KEY');
+async function start() {
+    // environment checks
     if (!process.env.MONGO_URI) throw new Error('Error with MONGO_URI');
     if (!process.env.NATS_URI) throw new Error('Error with NATS_URI');
     if (!process.env.NATS_CLIENT_ID) throw new Error('Error with NATS_CLIENT_ID');
 
-    //setup Mongoose
+    // setup Mongoose
     try {
         await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
@@ -40,9 +35,12 @@ const start = async() => {
         console.log('Error with listeners: ' + err);
     }
 
-    //app listren
-    app.listen(3000, () => {
-        console.log('Orders service is listening on port 3000!!!');
-    });
+    //Clear pending events
+    //If expirations service went offline while working on created order events
+    //When this service comes back online.. it checks the data base send start timer again for expired: false
+    await manageEvents();
+
+    console.log('Expiration service activated!!!');
 }
+
 start();

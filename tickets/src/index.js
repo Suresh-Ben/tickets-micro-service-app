@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { DatabaseConnectionError } = require('@sbticketsproject/shared');
-const { nats } = require('@sbticketsproject/shared');
+const { DatabaseConnectionError, nats } = require('@sbticketsproject/shared');
+const listener = require('./nats/listener');
 
 //my-imports
 const app = require('./app');
@@ -26,9 +26,17 @@ const start = async() => {
 
     //setup nats
     try {
-        nats.connect(process.env.NATS_CLIENT_ID, process.env.NATS_URI);
+        await nats.connect(process.env.NATS_CLIENT_ID, process.env.NATS_URI);
     } catch (err) {
         console.log('Error connecting to stan');
+    }
+
+    //start listeners
+    try {
+        await listener();
+        console.log('listeners activated successfully');
+    } catch (err) {
+        console.log('Error with listeners: ' + err);
     }
 
     //app listren
