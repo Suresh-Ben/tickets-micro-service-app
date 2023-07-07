@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: sureshben/payments
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MONGO_URI
+              value: 'mongodb://payments-mongo-cluster-service:27017/payments'
+            - name: NATS_URI
+              value: 'http://nats-service:4222'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: json-web-token-secret
+                  key: jwtkey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-cluster-service
+spec:
+  selector:
+    app: payments
+  ports:
+    - name: payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

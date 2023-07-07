@@ -1,7 +1,7 @@
 const express = require('express');
 const Ticket = require('../db-models/Ticket');
 const { body, validationResult } = require('express-validator');
-const { NotFoundError, currentUser, NotAuthorizedError, nats, TicketUpdatedSchema, publishEvent } = require('@sbticketsproject/shared');
+const { NotFoundError, currentUser, NotAuthorizedError, nats, RequestValidationError, TicketUpdatedSchema, publishEvent } = require('@sbticketsproject/shared');
 
 const router = express.Router();
 

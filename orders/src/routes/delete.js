@@ -10,6 +10,7 @@ router.delete('/api/orders/:orderId', async(req, res) => {
 
     //find the order
     const order = await Order.findById(orderId).populate('ticket');
+    const previousOrder = await Order.findById(orderId).populate('ticket');
     if (!order) throw new NotFoundError();
 
     const token = req.cookies['jwt'];
@@ -26,7 +27,9 @@ router.delete('/api/orders/:orderId', async(req, res) => {
     const stan = nats.client();
     await publishEvent(stan, OrderDeletedSchema.channel, OrderDeletedSchema.create({
         orderId: order._id,
-        ticketId: order.ticket._id
+        ticketId: order.ticket._id,
+        version: order.version,
+        previousVersion: previousOrder.version
     }));
 
     res.send({ message: "order deleted succefully!!" });

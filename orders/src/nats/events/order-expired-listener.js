@@ -13,6 +13,8 @@ async function onMessage(data, msg) {
 
     //cancel order 
     const order = await Order.findById(orderData.orderId).populate('ticket');
+    const previousOrder = await Order.findById(orderData.orderId).populate('ticket');
+
     //we cannot cancel a order when it is already completed or already been canceled by user
     if (order.status == OrderStatus.Cancelled || order.status == OrderStatus.Complete) {
         msg.ack();
@@ -27,7 +29,9 @@ async function onMessage(data, msg) {
     const stan = nats.client();
     await publishEvent(stan, OrderDeletedSchema.channel, OrderDeletedSchema.create({
         orderId: order._id,
-        ticketId: order.ticket._id
+        ticketId: order.ticket._id,
+        version: order.version,
+        previousVersion: previousOrder.version
     }));
 
     msg.ack();

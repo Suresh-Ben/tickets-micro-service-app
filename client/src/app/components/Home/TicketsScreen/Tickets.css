@@ -1,0 +1,13 @@
+.ticket-container {
+    margin: 1.5rem 0;
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.tickets-link {
+    text-decoration: none;
+    color: black;
+}

@@ -1,5 +1,6 @@
 const { nats, Listener, OrderDeletedSchema, ticketStatus, publishEvent, TicketUpdatedSchema } = require('@sbticketsproject/shared');
 const Ticket = require('../../db-models/Ticket');
+const Order = require('../../db-models/order');
 
 function ListenOrderDeletedEvents() {
     const stan = nats.client();
@@ -10,6 +11,11 @@ function ListenOrderDeletedEvents() {
 
 const onMessage = async(data, msg) => {
     const orderData = OrderDeletedSchema.validate(data);
+
+    //check version match
+    const order = await Order.findById(orderData.orderId);
+    if (!order || order.version != orderData.previousVersion) return;
+    await order.save();
 
     const previousTicket = await Ticket.findById(orderData.ticket.ticketId);
     const ticket = await Ticket.findById(orderData.ticket.ticketId);

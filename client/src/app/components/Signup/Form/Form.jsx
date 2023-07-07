@@ -34,7 +34,7 @@ function Form() {
                     }});
                 }}
             >
-                Sign In
+                Sign Up
             </button>
             {
                 (response && !response.isSuccess)? 

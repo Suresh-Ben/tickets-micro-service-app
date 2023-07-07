@@ -1,5 +1,6 @@
 const { nats, Listener, OrderCreatedSchema, ticketStatus, publishEvent, TicketUpdatedSchema } = require('@sbticketsproject/shared');
 const Ticket = require('../../db-models/Ticket');
+const Order = require('../../db-models/order');
 
 function ListenOrderCreatedEvents() {
     const stan = nats.client();
@@ -17,6 +18,12 @@ const onMessage = async(data, msg) => {
         status: ticketStatus.Locked
     });
     await ticket.save();
+
+    //create order to track versions
+    const order = await Order.create({
+        _id: orderData.orderId,
+        ticketId: orderData.ticket.ticketId
+    });
 
     //ticket isbeen changed... to match versions we are sending a tickect updated event
     const stan = nats.client();

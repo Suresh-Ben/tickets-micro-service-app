@@ -6,7 +6,7 @@ const { errorHandler, NotFoundError } = require('@sbticketsproject/shared');
 require('express-async-errors');
 
 //my-imports
-
+const Payment = require('./routes/payment');
 
 //inits
 const app = express();
@@ -18,7 +18,7 @@ app.use(cookieParser({
 }));
 
 //routes
-
+app.use(Payment);
 app.all('*', async() => {
     throw new NotFoundError();
 })

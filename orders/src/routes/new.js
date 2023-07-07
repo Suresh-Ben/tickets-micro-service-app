@@ -1,7 +1,6 @@
 const express = require('express');
 const { currentUser, OrderStatus, nats, publishEvent, OrderCreatedSchema, RequestValidationError, BadRequestError, NotFoundError, NotAuthorizedError } = require('@sbticketsproject/shared');
 const { body, validationResult } = require('express-validator');
-const mongoose = require('mongoose');
 const Ticket = require('../db-models/ticket');
 const Order = require('../db-models/order');
 
