@@ -58,7 +58,7 @@ function Payment() {
         if(!order) return;
         if(order.status === 'complete' || order.status === 'cancelled')
             navigate('/404');
-        if(order.status != 'awaiting:payment')
+        if(order.status !== 'awaiting:payment')
             getOrderInfo();
     }, [order]);
 

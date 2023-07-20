@@ -15,7 +15,7 @@ function Tickets() {
     },[]);
 
     useEffect(()=>{
-        if(!response) return;
+        if(!response || !response.data) return;
         setTickets(response.data.reverse());
     },[response]);
 

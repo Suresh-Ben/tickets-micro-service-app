@@ -16,6 +16,7 @@ function Home() {
     return (
         <div>
             <Header isVerified={response?.isSuccess}/>
+            <h5 className="container">Tickets:</h5>
             <Tickets/>
         </div>
     );

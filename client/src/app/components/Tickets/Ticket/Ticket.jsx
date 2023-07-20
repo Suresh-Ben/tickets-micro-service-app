@@ -19,15 +19,15 @@ function Ticket() {
 
     useEffect(()=>{
         if(!response) return;
-        if(response.type == 'ticket') {
+        if(response.type === 'ticket') {
             if(!response.isSuccess)
                 navigate('/404');
             setTicket(response.data);
         }
-        else if(response.type == 'order' && response.isSuccess) {
+        else if(response.type === 'order' && response.isSuccess) {
             setOrder(response.data);
         }
-        else if(response.type == 'order' && !response.isSuccess) {
+        else if(response.type === 'order' && !response.isSuccess) {
             setBuyError('Error Buying ticket');
         }
     }, [response]);
@@ -61,7 +61,7 @@ function Ticket() {
                                         type: 'order'
                                     });
                                 }}
-                                disabled={ticket.status != 'available'}
+                                disabled={ticket.status !== 'available'}
                             >
                                 Buy Ticket
                             </button>

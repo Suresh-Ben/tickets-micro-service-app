@@ -22,6 +22,7 @@ function Orders() {
         if(response.type === 'user') 
             makeRequest({url: '/api/orders', method: 'get', type: 'order'});
         else if(response.type === 'order') {
+            if(response.data)
             setOrders(response.data.reverse());
         }
         else if(response.type === 'order-delete') {
@@ -33,6 +34,7 @@ function Orders() {
         <div>
             <Header isVerified={response?.isSuccess}/>
             <div className='container'>
+            <h5>Orders:</h5>
                 {orders? 
                     orders.length? 
                     orders.map((order, i)=>{
@@ -44,13 +46,13 @@ function Orders() {
                                     <h6 style={{display: 'inline-block'}}>Amount to be paid: </h6> <h5 style={{display: 'inline-block'}}>{order.ticket.price}</h5><br />
                                     <h6 style={{display: 'inline-block'}}>Order status: </h6> 
                                     <h6
-                                        style={{ display: 'inline-block', color: order.status == 'cancelled'? 'red' : order.status == 'complete'? 'green': 'orange'}}
+                                        style={{ display: 'inline-block', color: order.status === 'cancelled'? 'red' : order.status === 'complete'? 'green': 'orange'}}
                                     >{order.status}</h6>
                                 </div>
 
                                 <div className='order-buttons-container'>
                                     <button className='order-button' style={{color: 'red'}}
-                                        disabled={order.status == 'cancelled'}
+                                        disabled={order.status === 'cancelled'}
                                         onClick={()=>{
                                             makeRequest({url: `/api/orders/${order._id}`, method: 'delete', type: 'order-delete'});
                                         }}
@@ -59,7 +61,7 @@ function Orders() {
                                         onClick={()=>{
                                             navigate(`/payments/${order._id}`);
                                         }}
-                                        disabled={order.status != 'awaiting:payment'}
+                                        disabled={order.status !== 'awaiting:payment'}
                                     >Confirm Order</button>
                                 </div>
                             </div>
